@@ -1,4 +1,17 @@
-from .bookshelf import Book, Bookshelf, BookshelfManager
+from .bookshelf import (
+    Book, 
+    Bookshelf, 
+    BookshelfManager,
+    AuditSession,
+    AuditDiff,
+    AuditSessionManager
+)
 
-__all__ = ["Book", "Bookshelf", "BookshelfManager"]
-
+__all__ = [
+    "Book", 
+    "Bookshelf", 
+    "BookshelfManager",
+    "AuditSession",
+    "AuditDiff",
+    "AuditSessionManager"
+]

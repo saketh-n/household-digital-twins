@@ -2,7 +2,7 @@
 //  BookshelfView.swift
 //  digital-twins
 //
-//  Main bookshelf display view
+//  Main bookshelf display view with 3D wooden bookshelf
 //
 
 import SwiftUI
@@ -11,31 +11,23 @@ struct BookshelfView: View {
     @ObservedObject var viewModel: BookshelfViewModel
     
     @State private var showClearConfirmation = false
-    
-    private let columns = [
-        GridItem(.flexible(), spacing: 16),
-        GridItem(.flexible(), spacing: 16)
-    ]
+    @State private var selectedBook: Book?
+    @State private var showBookDetail = false
+    @State private var showAuditMode = false
+    @State private var showManualEntry = false
+    @State private var showPhotoGallery = false
     
     var body: some View {
         NavigationStack {
             ZStack {
-                // Background gradient
-                LinearGradient(
-                    colors: [
-                        Color(.systemBackground),
-                        Color.teal.opacity(0.05)
-                    ],
-                    startPoint: .top,
-                    endPoint: .bottom
-                )
-                .ignoresSafeArea()
+                // Background - warm room ambiance
+                backgroundGradient
                 
                 // Main content
                 if viewModel.isLoading && viewModel.books.isEmpty {
                     loadingView
                 } else if viewModel.books.isEmpty && !viewModel.showError {
-                    EmptyStateView(onScan: viewModel.openCamera)
+                    EmptyStateView(onScan: { showPhotoGallery = true })
                 } else {
                     bookshelfContent
                 }
@@ -65,42 +57,114 @@ struct BookshelfView: View {
             .navigationBarTitleDisplayMode(.large)
             .toolbar {
                 ToolbarItem(placement: .navigationBarLeading) {
-                    if viewModel.hasBooks {
-                        Menu {
-                            Button(role: .destructive, action: { showClearConfirmation = true }) {
-                                Label("Clear Bookshelf", systemImage: "trash")
-                            }
+                    Menu {
+                        // Audit mode button
+                        Button {
+                            showAuditMode = true
                         } label: {
-                            Image(systemName: "ellipsis.circle")
-                                .foregroundColor(.primary)
+                            Label("Auditor Mode", systemImage: "checkmark.shield")
                         }
+                        
+                        // Add book manually
+                        Button {
+                            showManualEntry = true
+                        } label: {
+                            Label("Add Book Manually", systemImage: "plus.rectangle.on.rectangle")
+                        }
+                        
+                        if viewModel.hasBooks {
+                            Divider()
+                            
+                            Button(action: viewModel.toggleEditMode) {
+                                Label(
+                                    viewModel.isEditMode ? "Done Arranging" : "Arrange Books",
+                                    systemImage: viewModel.isEditMode ? "checkmark.circle" : "arrow.up.arrow.down"
+                                )
+                            }
+                            
+                            Divider()
+                            
+                            Button(role: .destructive, action: { showClearConfirmation = true }) {
+                                Label("Clear All Books", systemImage: "trash")
+                            }
+                        }
+                    } label: {
+                        Image(systemName: "ellipsis.circle")
+                            .foregroundColor(.primary)
                     }
                 }
                 
                 ToolbarItem(placement: .navigationBarTrailing) {
-                    Button(action: viewModel.openCamera) {
-                        Image(systemName: "camera.fill")
-                            .font(.system(size: 18))
-                            .foregroundStyle(
-                                LinearGradient(
-                                    colors: [.teal, .blue],
-                                    startPoint: .leading,
-                                    endPoint: .trailing
+                    HStack(spacing: 16) {
+                        if viewModel.hasBooks {
+                            Button(action: viewModel.toggleEditMode) {
+                                Text(viewModel.isEditMode ? "Done" : "Edit")
+                                    .font(.system(size: 16, weight: .medium))
+                                    .foregroundColor(viewModel.isEditMode ? .green : .brown)
+                            }
+                        }
+                        
+                        Button {
+                            showPhotoGallery = true
+                        } label: {
+                            Image(systemName: "camera.fill")
+                                .font(.system(size: 18))
+                                .foregroundStyle(
+                                    LinearGradient(
+                                        colors: [.orange, .brown],
+                                        startPoint: .leading,
+                                        endPoint: .trailing
+                                    )
                                 )
-                            )
+                        }
                     }
                 }
             }
-            .sheet(isPresented: $viewModel.showCamera) {
-                CameraView { image in
+            .fullScreenCover(isPresented: $showPhotoGallery) {
+                PhotoGalleryView(mode: .regularScan) { books in
+                    // Refresh bookshelf after scanning
                     Task {
-                        await viewModel.scanImage(image)
+                        await viewModel.fetchBookshelf()
+                    }
+                }
+            }
+            .sheet(isPresented: $showBookDetail) {
+                if let book = selectedBook {
+                    BookDetailSheet(
+                        book: book,
+                        onRemove: {
+                            showBookDetail = false
+                            Task {
+                                await viewModel.removeBook(book)
+                            }
+                        },
+                        onDismiss: {
+                            showBookDetail = false
+                        }
+                    )
+                    .presentationDetents([.medium, .large])
+                }
+            }
+            .fullScreenCover(isPresented: $showAuditMode) {
+                AuditModeView()
+                    .onDisappear {
+                        // Refresh bookshelf when audit mode closes
+                        Task {
+                            await viewModel.fetchBookshelf()
+                        }
+                    }
+            }
+            .sheet(isPresented: $showManualEntry) {
+                ManualBookEntrySheet { title, author in
+                    Task {
+                        await viewModel.addBookManually(title: title, author: author)
+                        showManualEntry = false
                     }
                 }
             }
             .alert("Clear Bookshelf", isPresented: $showClearConfirmation) {
                 Button("Cancel", role: .cancel) {}
-                Button("Clear", role: .destructive) {
+                Button("Clear All", role: .destructive) {
                     Task {
                         await viewModel.clearBookshelf()
                     }
@@ -112,59 +176,125 @@ struct BookshelfView: View {
         }
     }
     
+    // MARK: - Background
+    
+    private var backgroundGradient: some View {
+        ZStack {
+            // Base warm color
+            LinearGradient(
+                colors: [
+                    Color(red: 0.95, green: 0.92, blue: 0.88),
+                    Color(red: 0.9, green: 0.85, blue: 0.78)
+                ],
+                startPoint: .top,
+                endPoint: .bottom
+            )
+            .ignoresSafeArea()
+            
+            // Subtle texture overlay
+            GeometryReader { geometry in
+                Canvas { context, size in
+                    // Create subtle noise texture
+                    for _ in 0..<200 {
+                        let x = CGFloat.random(in: 0...size.width)
+                        let y = CGFloat.random(in: 0...size.height)
+                        let opacity = Double.random(in: 0.02...0.05)
+                        
+                        context.fill(
+                            Path(ellipseIn: CGRect(x: x, y: y, width: 2, height: 2)),
+                            with: .color(Color.brown.opacity(opacity))
+                        )
+                    }
+                }
+            }
+            .ignoresSafeArea()
+        }
+    }
+    
     // MARK: - Subviews
     
     private var loadingView: some View {
         VStack(spacing: 16) {
             ProgressView()
-                .progressViewStyle(CircularProgressViewStyle(tint: .teal))
+                .progressViewStyle(CircularProgressViewStyle(tint: .brown))
                 .scaleEffect(1.5)
             
             Text("Loading your bookshelf...")
-                .font(.system(size: 16))
+                .font(.system(size: 16, design: .serif))
                 .foregroundColor(.secondary)
         }
     }
     
     private var bookshelfContent: some View {
-        ScrollView {
-            VStack(alignment: .leading, spacing: 20) {
-                // Stats header
-                statsHeader
-                    .padding(.horizontal)
-                
-                // Book grid
-                LazyVGrid(columns: columns, spacing: 20) {
-                    ForEach(viewModel.books) { book in
-                        BookCardView(book: book)
-                    }
-                }
+        VStack(spacing: 0) {
+            // Stats header
+            statsHeader
                 .padding(.horizontal)
-                .padding(.bottom, 100)
+                .padding(.top, 8)
+            
+            // Help text
+            Text(viewModel.isEditMode 
+                 ? "Drag books to reorder • Tap Done when finished" 
+                 : "Tap book to see cover • Long press to remove")
+                .font(.system(size: 12))
+                .foregroundColor(viewModel.isEditMode ? .orange : .secondary)
+                .padding(.top, 8)
+                .animation(.easeInOut, value: viewModel.isEditMode)
+            
+            // Edit mode indicator
+            if viewModel.isEditMode {
+                HStack(spacing: 8) {
+                    Image(systemName: "arrow.up.arrow.down.circle.fill")
+                        .foregroundColor(.orange)
+                    Text("Rearrange Mode")
+                        .font(.system(size: 14, weight: .semibold))
+                        .foregroundColor(.orange)
+                }
+                .padding(.horizontal, 16)
+                .padding(.vertical, 8)
+                .background(
+                    RoundedRectangle(cornerRadius: 20)
+                        .fill(Color.orange.opacity(0.15))
+                )
+                .padding(.top, 8)
+                .transition(.scale.combined(with: .opacity))
             }
-            .padding(.top)
+            
+            // 3D Bookshelf
+            Bookshelf3DView(
+                books: viewModel.books,
+                isEditMode: viewModel.isEditMode,
+                onBookTap: { book in
+                    // Tap is now handled by Book3DView for rotation
+                },
+                onBookLongPress: { book in
+                    selectedBook = book
+                    showBookDetail = true
+                },
+                onMove: { fromIndex, toIndex in
+                    viewModel.moveBookDirectly(fromIndex: fromIndex, toIndex: toIndex)
+                }
+            )
         }
-        .refreshable {
-            await viewModel.refresh()
-        }
+        .animation(.spring(response: 0.3), value: viewModel.isEditMode)
     }
     
     private var statsHeader: some View {
         HStack(spacing: 16) {
-            // Book count
+            // Book count with icon
             HStack(spacing: 8) {
-                Image(systemName: "book.closed.fill")
-                    .foregroundColor(.teal)
+                Image(systemName: "books.vertical.fill")
+                    .foregroundColor(.brown)
                 
                 Text("\(viewModel.totalBooks) book\(viewModel.totalBooks == 1 ? "" : "s")")
-                    .font(.system(size: 15, weight: .medium))
+                    .font(.system(size: 15, weight: .medium, design: .serif))
                     .foregroundColor(.primary)
             }
             .padding(.horizontal, 14)
             .padding(.vertical, 8)
             .background(
                 RoundedRectangle(cornerRadius: 20)
-                    .fill(Color.teal.opacity(0.1))
+                    .fill(Color.brown.opacity(0.1))
             )
             
             Spacer()
@@ -182,7 +312,7 @@ struct BookshelfView: View {
             
             // Last updated
             if let lastUpdated = viewModel.formattedLastUpdated {
-                Text("Updated \(lastUpdated)")
+                Text("• \(lastUpdated)")
                     .font(.system(size: 13))
                     .foregroundColor(.secondary)
             }
@@ -243,4 +373,3 @@ extension View {
 #Preview {
     BookshelfView(viewModel: BookshelfViewModel())
 }
-

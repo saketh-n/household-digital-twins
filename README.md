@@ -26,6 +26,10 @@ household-digital-twins/
 - **🖼️ Cover Fetching**: Automatically fetches book cover images from OpenLibrary
 - **💾 Digital Twin**: Maintains a persistent model of your bookshelf
 - **🔄 CRUD Operations**: Query, add, and remove books from your digital bookshelf
+- **🔍 Auditor Mode**: Take multiple photos to audit your entire bookshelf, compare with digital twin, and sync differences
+- **✏️ Manual Entry**: Add books manually when the AI scanner misses them
+- **🔀 Book Ordering**: Drag and drop to reorder books on your shelf
+- **🔒 Deduplication**: Books are uniquely identified by title + author to prevent duplicates
 
 ## Backend Setup
 
@@ -62,6 +66,7 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 
 ### API Endpoints
 
+#### Bookshelf Operations
 | Method | Endpoint | Description |
 |--------|----------|-------------|
 | GET | `/health` | Health check and config status |
@@ -69,7 +74,20 @@ uvicorn main:app --host 0.0.0.0 --port 8000
 | GET | `/bookshelf` | Get all books in bookshelf |
 | POST | `/bookshelf/book` | Manually add a book |
 | DELETE | `/bookshelf/book` | Remove a specific book |
+| PUT | `/bookshelf/reorder` | Reorder books |
 | DELETE | `/bookshelf` | Clear all books |
+
+#### Audit Mode Operations
+| Method | Endpoint | Description |
+|--------|----------|-------------|
+| POST | `/audit/start` | Start new audit session |
+| GET | `/audit` | Get current audit session |
+| POST | `/audit/scan` | Scan image during audit |
+| POST | `/audit/book` | Manually add book to audit |
+| DELETE | `/audit/book` | Remove book from audit |
+| GET | `/audit/diff` | Compare audit with bookshelf |
+| POST | `/audit/apply` | Apply audit changes |
+| DELETE | `/audit` | Clear audit session |
 
 ### API Documentation
 
@@ -88,12 +106,21 @@ To set up:
 
 ## Usage Flow
 
+### Quick Scan
 1. **Take a Photo**: iOS app captures image of bookshelf
 2. **Upload**: Image sent to `/scan` endpoint
 3. **AI Analysis**: Claude Vision detects books in image
 4. **Enrichment**: OpenLibrary adds cover images
-5. **Storage**: Books added to digital twin
+5. **Storage**: Books added to digital twin (deduplicated)
 6. **Display**: iOS app queries `/bookshelf` to show collection
+
+### Auditor Mode
+1. **Start Audit**: Begin a new audit session
+2. **Take Multiple Photos**: Capture all sections of your bookshelf
+3. **Review Scans**: See accumulated unique books from all photos
+4. **Add Missing Books**: Manually add books the AI missed
+5. **Compare**: View diff between audit and digital twin
+6. **Apply Changes**: Choose to add new books and/or remove missing ones
 
 ## Environment Variables
 

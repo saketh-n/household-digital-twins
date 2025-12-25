@@ -26,6 +26,18 @@
 		A1000001AAAA00000000000A /* EmptyStateView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000A /* EmptyStateView.swift */; };
 		A1000001AAAA00000000000B /* ErrorBannerView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000B /* ErrorBannerView.swift */; };
 		A1000001AAAA00000000000C /* LoadingOverlayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000C /* LoadingOverlayView.swift */; };
+		A1000001AAAA00000000000D /* Book3DSpineView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000D /* Book3DSpineView.swift */; };
+		A1000001AAAA00000000000E /* WoodenShelfView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000E /* WoodenShelfView.swift */; };
+		A1000001AAAA00000000000F /* BookDetailSheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA00000000000F /* BookDetailSheet.swift */; };
+		A1000001AAAA000000000010 /* Bookshelf3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000010 /* Bookshelf3DView.swift */; };
+		A1000001AAAA000000000011 /* Book3DView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000011 /* Book3DView.swift */; };
+		A1000001AAAA000000000012 /* Color+Hex.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000012 /* Color+Hex.swift */; };
+		A1000001AAAA000000000013 /* AuditViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000013 /* AuditViewModel.swift */; };
+		A1000001AAAA000000000014 /* AuditModeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000014 /* AuditModeView.swift */; };
+		A1000001AAAA000000000015 /* AuditDiffView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000015 /* AuditDiffView.swift */; };
+		A1000001AAAA000000000016 /* ManualBookEntrySheet.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000016 /* ManualBookEntrySheet.swift */; };
+		A1000001AAAA000000000017 /* PhotoGalleryViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000017 /* PhotoGalleryViewModel.swift */; };
+		A1000001AAAA000000000018 /* PhotoGalleryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = A1000002AAAA000000000018 /* PhotoGalleryView.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -69,6 +81,18 @@
 		A1000002AAAA00000000000A /* EmptyStateView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmptyStateView.swift; sourceTree = "<group>"; };
 		A1000002AAAA00000000000B /* ErrorBannerView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ErrorBannerView.swift; sourceTree = "<group>"; };
 		A1000002AAAA00000000000C /* LoadingOverlayView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = LoadingOverlayView.swift; sourceTree = "<group>"; };
+		A1000002AAAA00000000000D /* Book3DSpineView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book3DSpineView.swift; sourceTree = "<group>"; };
+		A1000002AAAA00000000000E /* WoodenShelfView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WoodenShelfView.swift; sourceTree = "<group>"; };
+		A1000002AAAA00000000000F /* BookDetailSheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BookDetailSheet.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000010 /* Bookshelf3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Bookshelf3DView.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000011 /* Book3DView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Book3DView.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000012 /* Color+Hex.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "Color+Hex.swift"; sourceTree = "<group>"; };
+		A1000002AAAA000000000013 /* AuditViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditViewModel.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000014 /* AuditModeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditModeView.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000015 /* AuditDiffView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AuditDiffView.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000016 /* ManualBookEntrySheet.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ManualBookEntrySheet.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000017 /* PhotoGalleryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryViewModel.swift; sourceTree = "<group>"; };
+		A1000002AAAA000000000018 /* PhotoGalleryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotoGalleryView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -155,8 +179,17 @@
 			children = (
 				A1000002AAAA000000000003 /* Models.swift */,
 				A1000003AAAA000000000004 /* Services */,
+				A1000003AAAA00000000000B /* Extensions */,
 			);
 			path = Core;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA00000000000B /* Extensions */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002AAAA000000000012 /* Color+Hex.swift */,
+			);
+			path = Extensions;
 			sourceTree = "<group>";
 		};
 		A1000003AAAA000000000004 /* Services */ = {
@@ -171,10 +204,63 @@
 		A1000003AAAA000000000002 /* Features */ = {
 			isa = PBXGroup;
 			children = (
+				A1000003AAAA00000000000C /* Audit */,
 				A1000003AAAA000000000005 /* Bookshelf */,
 				A1000003AAAA000000000008 /* Camera */,
+				A1000003AAAA00000000000F /* PhotoGallery */,
 			);
 			path = Features;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA00000000000F /* PhotoGallery */ = {
+			isa = PBXGroup;
+			children = (
+				A1000003AAAA000000000010 /* ViewModels */,
+				A1000003AAAA000000000011 /* Views */,
+			);
+			path = PhotoGallery;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA000000000010 /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002AAAA000000000017 /* PhotoGalleryViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA000000000011 /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002AAAA000000000018 /* PhotoGalleryView.swift */,
+			);
+			path = Views;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA00000000000C /* Audit */ = {
+			isa = PBXGroup;
+			children = (
+				A1000003AAAA00000000000D /* ViewModels */,
+				A1000003AAAA00000000000E /* Views */,
+			);
+			path = Audit;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA00000000000D /* ViewModels */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002AAAA000000000013 /* AuditViewModel.swift */,
+			);
+			path = ViewModels;
+			sourceTree = "<group>";
+		};
+		A1000003AAAA00000000000E /* Views */ = {
+			isa = PBXGroup;
+			children = (
+				A1000002AAAA000000000014 /* AuditModeView.swift */,
+				A1000002AAAA000000000015 /* AuditDiffView.swift */,
+			);
+			path = Views;
 			sourceTree = "<group>";
 		};
 		A1000003AAAA000000000005 /* Bookshelf */ = {
@@ -235,6 +321,12 @@
 				A1000002AAAA00000000000A /* EmptyStateView.swift */,
 				A1000002AAAA00000000000B /* ErrorBannerView.swift */,
 				A1000002AAAA00000000000C /* LoadingOverlayView.swift */,
+				A1000002AAAA00000000000D /* Book3DSpineView.swift */,
+				A1000002AAAA00000000000E /* WoodenShelfView.swift */,
+				A1000002AAAA00000000000F /* BookDetailSheet.swift */,
+				A1000002AAAA000000000010 /* Bookshelf3DView.swift */,
+				A1000002AAAA000000000011 /* Book3DView.swift */,
+				A1000002AAAA000000000016 /* ManualBookEntrySheet.swift */,
 			);
 			path = Components;
 			sourceTree = "<group>";
@@ -382,6 +474,18 @@
 				A1000001AAAA00000000000A /* EmptyStateView.swift in Sources */,
 				A1000001AAAA00000000000B /* ErrorBannerView.swift in Sources */,
 				A1000001AAAA00000000000C /* LoadingOverlayView.swift in Sources */,
+				A1000001AAAA00000000000D /* Book3DSpineView.swift in Sources */,
+				A1000001AAAA00000000000E /* WoodenShelfView.swift in Sources */,
+				A1000001AAAA00000000000F /* BookDetailSheet.swift in Sources */,
+				A1000001AAAA000000000010 /* Bookshelf3DView.swift in Sources */,
+				A1000001AAAA000000000011 /* Book3DView.swift in Sources */,
+				A1000001AAAA000000000012 /* Color+Hex.swift in Sources */,
+				A1000001AAAA000000000013 /* AuditViewModel.swift in Sources */,
+				A1000001AAAA000000000014 /* AuditModeView.swift in Sources */,
+				A1000001AAAA000000000015 /* AuditDiffView.swift in Sources */,
+				A1000001AAAA000000000016 /* ManualBookEntrySheet.swift in Sources */,
+				A1000001AAAA000000000017 /* PhotoGalleryViewModel.swift in Sources */,
+				A1000001AAAA000000000018 /* PhotoGalleryView.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

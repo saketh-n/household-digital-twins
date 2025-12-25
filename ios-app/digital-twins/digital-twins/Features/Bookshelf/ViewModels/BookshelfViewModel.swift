@@ -22,10 +22,12 @@ class BookshelfViewModel: ObservableObject {
     @Published var successMessage = ""
     @Published var lastUpdated: Date?
     @Published var isServerReachable = true
+    @Published var isEditMode = false
     
     // MARK: - Private Properties
     private let apiService = APIService.shared
     private var cancellables = Set<AnyCancellable>()
+    private var pendingReorder: Task<Void, Never>?
     
     // MARK: - Computed Properties
     var totalBooks: Int { books.count }
@@ -133,8 +135,124 @@ class BookshelfViewModel: ObservableObject {
         await loadBookshelf()
     }
     
+    func fetchBookshelf() async {
+        await loadBookshelf()
+    }
+    
+    func addBookManually(title: String, author: String) async {
+        guard !title.trimmingCharacters(in: .whitespaces).isEmpty,
+              !author.trimmingCharacters(in: .whitespaces).isEmpty else {
+            return
+        }
+        
+        isLoading = true
+        error = nil
+        
+        do {
+            let response = try await apiService.addBook(
+                title: title.trimmingCharacters(in: .whitespaces),
+                author: author.trimmingCharacters(in: .whitespaces)
+            )
+            books = response.bookshelf.books
+            
+            if let lastUpdatedString = response.bookshelf.lastUpdated {
+                let formatter = ISO8601DateFormatter()
+                formatter.formatOptions = [.withInternetDateTime, .withFractionalSeconds]
+                lastUpdated = formatter.date(from: lastUpdatedString)
+            }
+            
+            successMessage = "Added '\(title)'"
+            showSuccess = true
+            isServerReachable = true
+        } catch let apiError as APIError {
+            handleError(apiError)
+        } catch {
+            handleError(.networkError(error.localizedDescription))
+        }
+        
+        isLoading = false
+    }
+    
+    func removeBook(_ book: Book) async {
+        isLoading = true
+        error = nil
+        
+        do {
+            try await apiService.removeBook(title: book.title, author: book.author)
+            // Remove from local array
+            books.removeAll { $0.id == book.id }
+            lastUpdated = Date()
+            successMessage = "Removed '\(book.title)'"
+            showSuccess = true
+            isServerReachable = true
+        } catch let apiError as APIError {
+            handleError(apiError)
+        } catch {
+            handleError(.networkError(error.localizedDescription))
+        }
+        
+        isLoading = false
+    }
+    
     func openCamera() {
         showCamera = true
+    }
+    
+    func toggleEditMode() {
+        isEditMode.toggle()
+    }
+    
+    func moveBook(from source: IndexSet, to destination: Int) {
+        books.move(fromOffsets: source, toOffset: destination)
+        
+        // Update order values
+        for (index, _) in books.enumerated() {
+            books[index].order = index
+        }
+        
+        // Debounce the API call
+        pendingReorder?.cancel()
+        pendingReorder = Task {
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second debounce
+            if !Task.isCancelled {
+                await persistBookOrder()
+            }
+        }
+    }
+    
+    func moveBookDirectly(fromIndex: Int, toIndex: Int) {
+        guard fromIndex != toIndex,
+              fromIndex >= 0, fromIndex < books.count,
+              toIndex >= 0, toIndex < books.count else { return }
+        
+        let book = books.remove(at: fromIndex)
+        books.insert(book, at: toIndex)
+        
+        // Update order values
+        for (index, _) in books.enumerated() {
+            books[index].order = index
+        }
+        
+        // Debounce the API call
+        pendingReorder?.cancel()
+        pendingReorder = Task {
+            try? await Task.sleep(nanoseconds: 500_000_000) // 0.5 second debounce
+            if !Task.isCancelled {
+                await persistBookOrder()
+            }
+        }
+    }
+    
+    private func persistBookOrder() async {
+        do {
+            try await apiService.reorderBooks(books)
+            lastUpdated = Date()
+            isServerReachable = true
+        } catch let apiError as APIError {
+            handleError(apiError)
+        } catch {
+            handleError(.networkError(error.localizedDescription))
+        }
     }
     
     func dismissError() {
